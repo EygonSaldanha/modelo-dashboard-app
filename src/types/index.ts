@@ -11,12 +11,18 @@ export interface FormData {
   message: string;
 }
 
+export interface SidebarSubItem {
+  title: string;
+  url: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}
+
 export interface SidebarItem {
   title: string;
   url: string;
   icon?: React.ComponentType<{ className?: string }>;
   isActive?: boolean;
-  items?: SidebarItem[];
+  items?: SidebarSubItem[];
 }
 
 export interface AppConfig {

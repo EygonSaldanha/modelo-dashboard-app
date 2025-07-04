@@ -11,6 +11,21 @@ import {
   HelpCircle,
   Calendar,
   BarChart3,
+  ChevronRight,
+  Users,
+  Building,
+  ShoppingCart,
+  Package,
+  CreditCard,
+  TrendingUp,
+  PieChart,
+  Activity,
+  Database,
+  Shield,
+  Bell,
+  BookOpen,
+  Phone,
+  Mail,
 } from "lucide-react"
 
 import {
@@ -24,15 +39,23 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 // This is sample data for the sidebar
 const data = {
   user: {
-    name: "John Doe",
-    email: "john@example.com",
+    name: "João Silva",
+    email: "joao@empresa.com",
     avatar: "/avatars/avatar-01.jpg",
   },
   navMain: [
@@ -42,41 +65,143 @@ const data = {
       icon: Home,
     },
     {
-      title: "Contact",
-      url: "/contact",
-      icon: MessageCircle,
-    },
-    {
       title: "Analytics",
       url: "/analytics",
       icon: BarChart3,
+      items: [
+        {
+          title: "Visão Geral",
+          url: "/analytics/overview",
+          icon: TrendingUp,
+        },
+        {
+          title: "Relatórios",
+          url: "/analytics/reports",
+          icon: PieChart,
+        },
+        {
+          title: "Métricas",
+          url: "/analytics/metrics",
+          icon: Activity,
+        },
+      ],
     },
     {
-      title: "Calendar",
+      title: "E-commerce",
+      url: "/ecommerce",
+      icon: ShoppingCart,
+      items: [
+        {
+          title: "Produtos",
+          url: "/ecommerce/products",
+          icon: Package,
+        },
+        {
+          title: "Pedidos",
+          url: "/ecommerce/orders",
+          icon: ShoppingCart,
+        },
+        {
+          title: "Clientes",
+          url: "/ecommerce/customers",
+          icon: Users,
+        },
+        {
+          title: "Pagamentos",
+          url: "/ecommerce/payments",
+          icon: CreditCard,
+        },
+      ],
+    },
+    {
+      title: "Formulários",
+      url: "/forms",
+      icon: FileText,
+      items: [
+        {
+          title: "Formulário Completo",
+          url: "/forms/complete",
+          icon: FileText,
+        },
+        {
+          title: "Contato",
+          url: "/forms/contact",
+          icon: MessageCircle,
+        },
+      ],
+    },
+    {
+      title: "Gerenciamento",
+      url: "/management",
+      icon: Building,
+      items: [
+        {
+          title: "Usuários",
+          url: "/management/users",
+          icon: Users,
+        },
+        {
+          title: "Empresas",
+          url: "/management/companies",
+          icon: Building,
+        },
+        {
+          title: "Dados",
+          url: "/management/data",
+          icon: Database,
+        },
+      ],
+    },
+    {
+      title: "Calendário",
       url: "/calendar",
       icon: Calendar,
-    },
-    {
-      title: "Documents",
-      url: "/documents",
-      icon: FileText,
     },
   ],
   navSecondary: [
     {
-      title: "Profile",
-      url: "/profile",
-      icon: User,
-    },
-    {
-      title: "Settings",
+      title: "Configurações",
       url: "/settings",
       icon: Settings,
+      items: [
+        {
+          title: "Perfil",
+          url: "/settings/profile",
+          icon: User,
+        },
+        {
+          title: "Segurança",
+          url: "/settings/security",
+          icon: Shield,
+        },
+        {
+          title: "Notificações",
+          url: "/settings/notifications",
+          icon: Bell,
+        },
+      ],
     },
     {
-      title: "Help",
-      url: "/help",
+      title: "Suporte",
+      url: "/support",
       icon: HelpCircle,
+      items: [
+        {
+          title: "Central de Ajuda",
+          url: "/support/help",
+          icon: BookOpen,
+        },
+        {
+          title: "Contato",
+          url: "/support/contact",
+          icon: Phone,
+        },
+        {
+          title: "Feedback",
+          url: "/support/feedback",
+          icon: Mail,
+        },
+      ],
     },
   ],
 }
@@ -104,17 +229,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>Navegação</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {data.navMain.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  {item.items ? (
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton>
+                          <item.icon className="size-4" />
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto size-4 transition-transform group-data-[state=open]:rotate-90" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <Link href={subItem.url}>
+                                  <subItem.icon className="size-4" />
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarMenuButton asChild>
+                      <Link href={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -122,17 +273,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
         
         <SidebarGroup>
-          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupLabel>Sistema</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {data.navSecondary.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  {item.items ? (
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton>
+                          <item.icon className="size-4" />
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto size-4 transition-transform group-data-[state=open]:rotate-90" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <Link href={subItem.url}>
+                                  <subItem.icon className="size-4" />
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarMenuButton asChild>
+                      <Link href={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
