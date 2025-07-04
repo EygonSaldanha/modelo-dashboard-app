@@ -1,0 +1,47 @@
+app:
+  name: "Modern Web App"
+  version: "1.0.0"
+  description: "A modern web application built with Next.js, TypeScript, and Tailwind CSS"
+  
+features:
+  - name: "Dark/Light Mode"
+    enabled: true
+    description: "Toggle between dark and light themes"
+  
+  - name: "Responsive Sidebar"
+    enabled: true
+    description: "Collapsible sidebar with navigation"
+    
+  - name: "Form Validation"
+    enabled: true
+    description: "Real-time form validation with error handling"
+    
+  - name: "Toast Notifications"
+    enabled: true
+    description: "User feedback through toast messages"
+
+ui:
+  components:
+    - shadcn/ui
+    - Radix UI
+    - Tailwind CSS
+  
+  icons:
+    - Lucide React
+    - Radix Icons
+    
+  theming:
+    default: "system"
+    modes: ["light", "dark", "system"]
+    
+accessibility:
+  aria_labels: true
+  keyboard_navigation: true
+  semantic_html: true
+  color_contrast: "wcag_aa"
+
+performance:
+  lazy_loading: true
+  code_splitting: true
+  image_optimization: true
+  server_components: true
