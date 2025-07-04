@@ -40,7 +40,7 @@ export function MainForm({ onSubmit }: MainFormProps) {
       })
       
       reset()
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong!", {
         description: "Please try again later.",
       })
@@ -54,7 +54,7 @@ export function MainForm({ onSubmit }: MainFormProps) {
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold tracking-tight">Contact Us</h2>
         <p className="text-muted-foreground">
-          Fill out the form below and we'll get back to you.
+          Fill out the form below and we&apos;ll get back to you.
         </p>
       </div>
       

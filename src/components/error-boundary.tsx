@@ -61,7 +61,7 @@ function DefaultErrorFallback({ error, resetError }: DefaultErrorFallbackProps) 
       </div>
       
       <div className="max-w-md text-center text-sm text-muted-foreground">
-        <p>We're sorry, but something unexpected happened. Please try again.</p>
+        <p>We&apos;re sorry, but something unexpected happened. Please try again.</p>
         {process.env.NODE_ENV === "development" && (
           <details className="mt-4 text-left">
             <summary className="cursor-pointer font-medium">Error details</summary>
