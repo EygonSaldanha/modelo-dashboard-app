@@ -1,34 +1,7 @@
 "use client"
 
 import { CompleteForm } from "@/components/complete-form"
-
-interface CompleteFormData {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  dateOfBirth: string
-  gender: string
-  address: {
-    street: string
-    number: string
-    complement?: string
-    neighborhood: string
-    city: string
-    state: string
-    zipCode: string
-  }
-  occupation: string
-  company?: string
-  income: string
-  interests: string[]
-  bio?: string
-  website?: string
-  linkedin?: string
-  newsletter: boolean
-  terms: boolean
-  privacy: boolean
-}
+import { type CompleteFormData } from "@/lib/actions"
 
 export default function CompleteFormPage() {
   const handleFormSubmit = (data: CompleteFormData) => {

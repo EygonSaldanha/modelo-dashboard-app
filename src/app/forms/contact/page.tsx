@@ -1,11 +1,11 @@
 "use client"
 
 import { MainForm } from "@/components/main-form"
-import { FormData } from "@/types"
+import { type ContactFormData } from "@/lib/actions"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function ContactFormPage() {
-  const handleFormSubmit = (data: FormData) => {
+  const handleFormSubmit = (data: ContactFormData) => {
     console.log("Dados do formulário de contato:", data)
     // Processar dados do formulário
   }

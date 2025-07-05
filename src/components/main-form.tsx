@@ -5,60 +5,65 @@ import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { toast } from "sonner"
 import { Send, User, Mail, MessageCircle } from "lucide-react"
+import { useTransition } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { FormData } from "@/types"
+import { submitContactForm, type ContactFormData } from "@/lib/actions"
 
 interface MainFormProps {
-  onSubmit?: (data: FormData) => void
+  onSubmit?: (data: ContactFormData) => void
 }
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .required("Name is required")
-    .min(2, "Name must be at least 2 characters"),
+    .required("Nome é obrigatório")
+    .min(2, "Nome deve ter pelo menos 2 caracteres"),
   email: Yup.string()
-    .required("Email is required")
-    .email("Invalid email address"),
+    .required("Email é obrigatório")
+    .email("Email inválido"),
   message: Yup.string()
-    .required("Message is required")
-    .min(10, "Message must be at least 10 characters")
+    .required("Mensagem é obrigatória")
+    .min(10, "Mensagem deve ter pelo menos 10 caracteres")
 })
 
-const initialValues: FormData = {
+const initialValues: ContactFormData = {
   name: "",
   email: "",
   message: ""
 }
 
 export function MainForm({ onSubmit }: MainFormProps) {
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  const handleFormSubmit = async (values: FormData, { resetForm }: { resetForm: () => void }) => {
-    setIsSubmitting(true)
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      if (onSubmit) {
-        onSubmit(values)
+  const handleFormSubmit = async (values: ContactFormData, { resetForm }: { resetForm: () => void }) => {
+    startTransition(async () => {
+      try {
+        const result = await submitContactForm(values)
+        
+        if (result.success) {
+          toast.success("Mensagem enviada com sucesso!", {
+            description: "Obrigado pela sua mensagem. Retornaremos em breve.",
+          })
+          
+          if (onSubmit) {
+            onSubmit(values)
+          }
+          
+          resetForm()
+        } else {
+          toast.error("Erro ao enviar mensagem!", {
+            description: result.error || "Tente novamente mais tarde.",
+          })
+        }
+      } catch (error) {
+        toast.error("Erro inesperado!", {
+          description: "Tente novamente mais tarde.",
+        })
+        console.error("Form submission error:", error)
       }
-      
-      toast.success("Form submitted successfully!", {
-        description: "Thank you for your message. We'll get back to you soon.",
-      })
-      
-      resetForm()
-    } catch {
-      toast.error("Something went wrong!", {
-        description: "Please try again later.",
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
+    })
   }
 
   return (
@@ -146,17 +151,17 @@ export function MainForm({ onSubmit }: MainFormProps) {
             <Button
               type="submit"
               className="w-full"
-              disabled={isSubmitting || formikSubmitting}
+              disabled={isPending || formikSubmitting}
             >
-              {isSubmitting || formikSubmitting ? (
+              {isPending || formikSubmitting ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Submitting...
+                  Enviando...
                 </>
               ) : (
                 <>
                   <Send className="mr-2 h-4 w-4" />
-                  Send Message
+                  Enviar Mensagem
                 </>
               )}
             </Button>

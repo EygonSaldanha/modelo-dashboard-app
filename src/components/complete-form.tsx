@@ -4,6 +4,9 @@ import * as React from "react"
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik"
 import * as Yup from "yup"
 import { toast } from "sonner"
+import { useTransition } from "react"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import {
   User,
   Mail,
@@ -32,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { submitCompleteForm, type CompleteFormData as ServerCompleteFormData } from "@/lib/actions"
 
 const interestOptions = [
   "Tecnologia",
@@ -46,33 +50,8 @@ const interestOptions = [
   "Natureza"
 ]
 
-interface CompleteFormData {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  dateOfBirth: string
-  gender: string
-  address: {
-    street: string
-    number: string
-    complement?: string
-    neighborhood: string
-    city: string
-    state: string
-    zipCode: string
-  }
-  occupation: string
-  company?: string
-  income: string
-  interests: string[]
-  bio?: string
-  website?: string
-  linkedin?: string
-  newsletter: boolean
-  terms: boolean
-  privacy: boolean
-}
+// Usando o tipo do servidor
+type CompleteFormData = ServerCompleteFormData
 
 interface CompleteFormProps {
   onSubmit?: (data: CompleteFormData) => void
@@ -135,32 +114,63 @@ const initialValues: CompleteFormData = {
 }
 
 export function CompleteForm({ onSubmit }: CompleteFormProps) {
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const { data: session } = useSession()
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+
+  // Verificar se o usuário está autenticado
+  React.useEffect(() => {
+    if (!session) {
+      toast.error("Você precisa estar logado para acessar esta página")
+      router.push("/auth/signin")
+    }
+  }, [session, router])
 
   const handleFormSubmit = async (values: CompleteFormData, { resetForm }: FormikHelpers<CompleteFormData>) => {
-    setIsSubmitting(true)
-    
-    try {
-      // Simular envio de dados
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      if (onSubmit) {
-        onSubmit(values)
-      }
-      
-      toast.success("Formulário enviado com sucesso!", {
-        description: "Seus dados foram salvos e processados.",
-      })
-      
-      console.log("Dados do formulário:", values)
-      resetForm()
-    } catch {
-      toast.error("Erro ao enviar formulário!", {
-        description: "Tente novamente em alguns instantes.",
-      })
-    } finally {
-      setIsSubmitting(false)
+    if (!session) {
+      toast.error("Você precisa estar logado para enviar o formulário")
+      return
     }
+
+    startTransition(async () => {
+      try {
+        const result = await submitCompleteForm(values)
+        
+        if (result.success) {
+          toast.success("Formulário enviado com sucesso!", {
+            description: "Seus dados foram salvos e processados.",
+          })
+          
+          if (onSubmit) {
+            onSubmit(values)
+          }
+          
+          resetForm()
+        } else {
+          toast.error("Erro ao enviar formulário!", {
+            description: result.error || "Tente novamente em alguns instantes.",
+          })
+        }
+      } catch (error) {
+        toast.error("Erro inesperado!", {
+          description: "Tente novamente em alguns instantes.",
+        })
+        console.error("Form submission error:", error)
+      }
+    })
+  }
+
+  if (!session) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Acesso Restrito</h1>
+          <p className="text-muted-foreground">
+            Você precisa estar logado para acessar esta página.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -655,10 +665,10 @@ export function CompleteForm({ onSubmit }: CompleteFormProps) {
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting || formikSubmitting}
+                disabled={isPending || formikSubmitting}
                 className="sm:w-auto"
               >
-                {isSubmitting || formikSubmitting ? (
+                {isPending || formikSubmitting ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     Enviando...
