@@ -50,6 +50,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { useUserStore } from "@/stores"
 
 // This is sample data for the sidebar
 const data = {
@@ -157,6 +158,11 @@ const data = {
       url: "/calendar",
       icon: Calendar,
     },
+    {
+      title: "Demo Zustand",
+      url: "/zustand-demo",
+      icon: Database,
+    },
   ],
   navSecondary: [
     {
@@ -207,6 +213,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useUserStore()
+  
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -326,9 +334,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <User className="h-3 w-3" />
                 </div>
                 <div className="grid flex-1 text-left text-xs leading-tight">
-                  <span className="truncate font-medium">{data.user.name}</span>
+                  <span className="truncate font-medium">{user?.name || data.user.name}</span>
                   <span className="truncate text-[10px] text-muted-foreground">
-                    {data.user.email}
+                    {user?.email || data.user.email}
                   </span>
                 </div>
               </div>
