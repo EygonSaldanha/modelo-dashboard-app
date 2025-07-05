@@ -7,7 +7,7 @@ A modern, responsive web application built with Next.js 15, TypeScript, Tailwind
 - **🎨 Modern UI/UX**: Built with shadcn/ui components and Tailwind CSS
 - **🌓 Dark/Light Mode**: System preference detection with manual toggle
 - **📱 Responsive Design**: Mobile-first approach with responsive sidebar
-- **📝 Contact Form**: Validated form with real-time error handling
+- **📝 Contact Form**: Validated form with real-time error handling using Formik
 - **🔔 Toast Notifications**: User feedback through sonner notifications
 - **♿ Accessibility**: WCAG compliant with ARIA labels and keyboard navigation
 - **⚡ Performance**: Optimized with Next.js 15 features and server components
@@ -20,7 +20,7 @@ A modern, responsive web application built with Next.js 15, TypeScript, Tailwind
 - **Next.js 15** - React framework with App Router
 - **TypeScript** - Type-safe JavaScript
 - **Tailwind CSS** - Utility-first CSS framework
-- **React Hook Form** - Performant forms with validation
+- **Formik** - Build forms with validation and Yup schema
 
 ### UI Components
 - **shadcn/ui** - Reusable component library
@@ -94,7 +94,7 @@ src/
 - Accessible keyboard navigation
 
 ### Contact Form
-- Real-time validation with react-hook-form
+- Real-time validation with Formik and Yup schemas
 - Accessible error messages
 - Loading states with visual feedback
 - Toast notifications for success/error states
